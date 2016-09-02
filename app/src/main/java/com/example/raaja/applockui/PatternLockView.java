@@ -34,6 +34,7 @@ public class PatternLockView extends View {
     private ArrayList<Node> nodeList;
     private OnPatternChangedListener patternListener;
     private float prevNodeX, prevNodeY, currentMovementX, currentMovementY;
+    private float lastSelectedNodeX,lastSelectedNodeY;
     private Path patternPath;
 
 
@@ -500,7 +501,10 @@ public class PatternLockView extends View {
                 return true;
 
             case MotionEvent.ACTION_UP:
+                setCurrentMovementX(getPrevNodeX());
+                setCurrentMovementY(getPrevNodeY());
                 getOnPatternChangedListener().onPatternCompleted(true);
+                invalidate();
                 return false;
         }
 
