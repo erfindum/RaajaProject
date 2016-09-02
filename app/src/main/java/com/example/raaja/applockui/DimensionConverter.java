@@ -1,6 +1,7 @@
 package com.example.raaja.applockui;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 
 /**
  * Created by RAAJA for SmartFoxItSolutions on 28-08-2016.
@@ -18,8 +19,8 @@ public class DimensionConverter  {
      */
 
     public static float convertDpToPixel(float dp, Context ctxt){
-        int density = ctxt.getResources().getDisplayMetrics().densityDpi;
-        return (dp*density)/160f;
+        DisplayMetrics metrics = ctxt.getResources().getDisplayMetrics();
+        return dp*(metrics.densityDpi/DisplayMetrics.DENSITY_DEFAULT);
     }
 
     /**

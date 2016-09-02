@@ -69,11 +69,12 @@ public class PatternLockView extends View {
     /** ---------------- Setters And Getters ------------------*/
 
     public void setNodeRectSize(float nodeRectDp){
-        this.nodeRectSize = Math.round(DimensionConverter.convertDpToPixel(nodeRectDp,getContext()));
+        this.nodeRectSize = Math.round(nodeRectDp);
+        Log.d("PatternLockView","Node Total Rect in DP "+ nodeRectDp);
     }
 
     public void setNodeCornerSize(float nodeCornerDp){
-        this.nodeCornerSize = Math.round(DimensionConverter.convertDpToPixel(nodeCornerDp,getContext()));
+        this.nodeCornerSize = Math.round(nodeCornerDp);
     }
 
                 /* Sets the total dimension of the Pattern View without padding after the measurement
@@ -247,7 +248,6 @@ public class PatternLockView extends View {
                 }else{
                     node.nodeColor = defaultColor;
                     node.nodeSelectedColor = defaultSelectedColor;
-                    Log.d("PatternLockView","Color = "+ defaultSelectedColor);
                 }
                 node.nodeInt = ++colorIndex;
                 nodeList.add(node);
@@ -256,7 +256,12 @@ public class PatternLockView extends View {
         setNodeList(nodeList);
         resetIsNodeSelected();
         setPatternRecreate(true);
-        Log.d("PatternLockView","Called in initialize "+ getNodeList().isEmpty() );
+        Log.d("PatternLockView","Called in onMeasure"+ getMeasuredHeight()+"\n"
+                + "PatternDimension after measurement " + getPatternViewDimension()+"\n"
+                +" Padding left and right : "+getPaddingLeft()+" "+ getPaddingRight()+"\n"
+                + "NodeSpace : "+nodeSpace + " NodeSize : "+nodeSize+ " NodeSelectedSize : "+nodeSelectedSize
+                + " NodeTotalSize : "+ nodeTotalRectSize);
+
     }
 
     /**
@@ -293,7 +298,7 @@ public class PatternLockView extends View {
         setPatternViewDimension(measuredSize);
         initNode();
         setMeasuredDimension((measuredSize+getPaddingLeft())+getPaddingRight(),(measuredSize+getPaddingTop())+getPaddingBottom());
-        Log.d("PatternLockView","Called in onMeasure"+ getMeasuredHeight() );
+
     }
 
     /**
