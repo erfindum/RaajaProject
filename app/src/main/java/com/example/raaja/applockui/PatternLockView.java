@@ -25,15 +25,17 @@ import java.util.ArrayList;
  */
 public class PatternLockView extends View {
 
-    private float nodeRectSize,nodeCornerSize;
+    private float nodeRectSize,nodeCornerSize, patternLineWidth;
     private int patternViewDimension;
     private String[] nodeColor,nodeSelectedColor;
-    private int defaultColor,defaultSelectedColor;
+    private int nodeDefaultColor, nodeDefaultSelectedColor,patternLineColor;
     private boolean patternRecreated, patternError, patternStarted;
     private Paint nodePaint,nodeSelectedPaint,linePaint;
     private ArrayList<Node> nodeList;
     private OnPatternChangedListener patternListener;
+    private float prevNodeX, prevNodeY, currentMovementX, currentMovementY;
     private Path patternPath;
+
 
     public PatternLockView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,11 +53,19 @@ public class PatternLockView extends View {
         TypedArray attributeArray = context.obtainStyledAttributes(attrs,R.styleable.PatternLockView,0,0);
         float nodeRectSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCellSize,30);
         float nodeCornerSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCornerSize,5);
+        float patternStrokeWidthPixel = attributeArray.getDimension(R.styleable.PatternLockView_patternLineStroke,10);
+        int patternLineColorID = attributeArray.getColor(R.styleable.PatternLockView_patternLineColor,Color.BLUE);
+        int nodeDefaultColorID = attributeArray.getColor(R.styleable.PatternLockView_nodeDefaultColor,Color.GREEN);
+        int nodeSelectedDefaultColorID=attributeArray.getColor(R.styleable.PatternLockView_nodeSelectedDefaultColor,Color.RED);
         int nodeColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeColor,0);
         int nodeSelectedColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeSelectedColor,0);
         attributeArray.recycle();
         setNodeCornerSize(nodeCornerSizePixel);
         setNodeRectSize(nodeRectSizePixel);
+        setPatternLineWidth(patternStrokeWidthPixel);
+        setNodeDefaultColor(nodeDefaultColorID);
+        setPatternLineColor(patternLineColorID);
+        setNodeDefaultSelectedColor(nodeSelectedDefaultColorID);
         if(nodeColorResourceID !=0){
            String[] colorResource =  getResources().getStringArray(nodeColorResourceID);
             setNodeColor(colorResource);
@@ -67,7 +77,6 @@ public class PatternLockView extends View {
         }
         setPatternPath();
         setNodePaint();
-        setNodeSelectedPaint();
         setLinePaint();
     }
 
@@ -80,6 +89,10 @@ public class PatternLockView extends View {
 
     public void setNodeCornerSize(float nodeCornerPixel){
         this.nodeCornerSize = nodeCornerPixel;
+    }
+
+    public void setPatternLineWidth(float patternLineWidth){
+        this.patternLineWidth = patternLineWidth;
     }
 
                 /* Sets the total dimension of the Pattern View without padding after the measurement
@@ -97,7 +110,7 @@ public class PatternLockView extends View {
         if((colorArray.length ==9)) {
             this.nodeColor = colorArray;
         }else{
-            defaultColor = Color.BLUE;
+            nodeDefaultColor = Color.BLUE;
         }
     }
 
@@ -105,21 +118,41 @@ public class PatternLockView extends View {
         if((colorSelectedArray.length==9)){
             this.nodeSelectedColor = colorSelectedArray;
         }else{
-            defaultSelectedColor = Color.CYAN;
+            nodeDefaultSelectedColor = Color.CYAN;
         }
     }
 
-    public void setPatternRecreate(boolean recreatePattern){
-        this.patternRecreated = recreatePattern;
+    public void setPatternLineColor(int color){
+        this.patternLineColor = color;
+    }
+
+    public void setNodeDefaultColor(int color){
+        this.nodeDefaultColor = color;
+    }
+
+    public void setNodeDefaultSelectedColor(int color){
+        this.nodeDefaultSelectedColor =color;
+    }
+
+    public void setPrevNodeX(float prevX){
+        this.prevNodeX = prevX;
+    }
+
+    public void setPrevNodeY(float prevY){
+        this.prevNodeY = prevY;
+    }
+
+    public void setCurrentMovementX(float currentX){
+        this.currentMovementX = currentX;
+    }
+
+    public void setCurrentMovementY(float currentY){
+        this.currentMovementY = currentY;
     }
 
                     //Sets a boolean flag to listen for after the pattern is completed. If false touch events are handled.
     public void setPatternError(boolean errorPattern){
         this.patternError = errorPattern;
-    }
-
-    public void setPatternStarted(boolean selectedNode){
-        this.patternStarted = selectedNode;
     }
 
     public void setNodeList(ArrayList<Node> nodeList){
@@ -136,16 +169,11 @@ public class PatternLockView extends View {
         nodePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
     }
 
-    public void setNodeSelectedPaint(){
-        this.nodeSelectedPaint = new Paint();
-        nodeSelectedPaint.setStyle(Paint.Style.FILL);
-        nodeSelectedPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-    }
-
     public void setLinePaint(){
         this.linePaint = new Paint();
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        linePaint.setStrokeWidth(getPatternLineWidth());
     }
 
     public float getNodeRectSize(){
@@ -154,6 +182,10 @@ public class PatternLockView extends View {
 
     public  float getNodeCornerSize(){
         return this.nodeCornerSize;
+    }
+
+    public float getPatternLineWidth(){
+        return this.patternLineWidth;
     }
 
     public int getPatternViewDimension(){
@@ -172,16 +204,36 @@ public class PatternLockView extends View {
         return this.nodeSelectedColor;
     }
 
-    public boolean isPatternRecreated(){
-        return this.patternRecreated;
+    public int getPatternLineColor(){
+        return this.patternLineColor;
+    }
+
+    public int getNodeDefaultColor(){
+        return this.nodeDefaultColor;
+    }
+
+    public int getNodeDefaultSelectedColor(){
+        return this.nodeDefaultSelectedColor;
+    }
+
+    public float getPrevNodeX(){
+        return this.prevNodeX;
+    }
+
+    public float getPrevNodeY(){
+        return this.prevNodeY;
+    }
+
+    public float getCurrentMovementX(){
+        return this.currentMovementX;
+    }
+
+    public float getCurrentMovementY(){
+        return this.currentMovementY;
     }
 
     public boolean isPatternError(){
         return this.patternError;
-    }
-
-    public boolean isPatternStarted(){
-        return this.patternStarted;
     }
 
     public ArrayList<Node> getNodeList(){
@@ -194,10 +246,6 @@ public class PatternLockView extends View {
 
     public Paint getNodePaint(){
         return this.nodePaint;
-    }
-
-    public Paint getNodeSelectedPaint(){
-        return this.nodeSelectedPaint;
     }
 
     public Paint getLinePaint(){
@@ -237,7 +285,14 @@ public class PatternLockView extends View {
         int nodeSelectedColor;
         ValueAnimator nodeAnimator;
         int nodeInt; /* Identifier of the node drawn from 1-9. Used to identify a particular node for pattern validation */
-        boolean isNodeSelected;
+        boolean nodeSelected;
+        void setNodeSelected(boolean isSelected){
+            this.nodeSelected = isSelected;
+        }
+        boolean isNodeSelected(){
+            return this.nodeSelected;
+        }
+
     }
 
     /**
@@ -286,8 +341,8 @@ public class PatternLockView extends View {
                     node.nodeColor = Color.parseColor(nodeColorArray[colorIndex]);
                     node.nodeSelectedColor = Color.parseColor(nodeSelectedColorArray[colorIndex]);
                 }else{
-                    node.nodeColor = defaultColor;
-                    node.nodeSelectedColor = defaultSelectedColor;
+                    node.nodeColor = getNodeDefaultColor();
+                    node.nodeSelectedColor = getNodeDefaultSelectedColor();
                 }
                 node.nodeInt = ++colorIndex;
                 nodeList.add(node);
@@ -295,7 +350,7 @@ public class PatternLockView extends View {
         }
         setNodeList(nodeList);
         resetIsNodeSelected();
-        setPatternRecreate(true);
+        setPatternError(false);
     }
 
     /**
@@ -304,7 +359,7 @@ public class PatternLockView extends View {
 
     void resetIsNodeSelected(){
         for(Node node:getNodeList()){
-            node.isNodeSelected = false;
+            node.setNodeSelected(false);
         }
     }
 
@@ -314,7 +369,6 @@ public class PatternLockView extends View {
 
     void resetPatternView(){
         resetIsNodeSelected();
-        setPatternRecreate(true);
         setPatternError(false);
         invalidate();
     }
@@ -365,50 +419,35 @@ public class PatternLockView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(isPatternStarted()){
-
-            Paint selectedRectPaint = getNodeSelectedPaint();
-            Paint patternLinePaint = getLinePaint();
-            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
-                for(Node node:getNodeList()){
-                    if(node.isNodeSelected){
-                        selectedRectPaint.setColor(node.nodeSelectedColor);
-                        canvas.drawRoundRect(node.nodeSelectedRect,getNodeCornerSize(),getNodeCornerSize(),selectedRectPaint);
-                        patternLinePaint.setColor(node.nodeColor);
-                    }
-                }
-                canvas.drawPath(getPatternPath(),getLinePaint());
-            }else{
-                for(Node node:getNodeList()){
-                    if (node.isNodeSelected){
-                        selectedRectPaint.setColor(node.nodeSelectedColor);
-                        patternLinePaint.setColor(node.nodeColor);
-                        canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
-                                            ,node.nodeSelectedBottom,getNodeCornerSize(),getNodeCornerSize(),selectedRectPaint);
-                    }
-                }
-                canvas.drawPath(getPatternPath(),getLinePaint());
-            }
-        }
-
-        if(isPatternRecreated()){
-
             Paint rectPaint = getNodePaint();
+            Paint linePaint = getLinePaint();
+                linePaint.setColor(getPatternLineColor());
+                linePaint.setAlpha(125);
+
             if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
                 for(Node node:getNodeList()){
                     rectPaint.setColor(node.nodeColor);
                     canvas.drawRoundRect(node.nodeRect,getNodeCornerSize(),getNodeCornerSize(),rectPaint);
                 }
             }else{
+                canvas.drawLine(getPrevNodeX(),getPrevNodeY(),getCurrentMovementX(),getCurrentMovementY(),linePaint);
+                canvas.drawPath(getPatternPath(),linePaint);
                 for (Node node :getNodeList()){
-                    rectPaint.setColor(node.nodeColor);
-                    canvas.drawRoundRect(node.nodeLeft,node.nodeTop,node.nodeRight,node.nodeBottom,getNodeCornerSize(),getNodeCornerSize(),rectPaint);
-                    Log.d("PatternLockView","Rect Bounds " + node.nodeTotalRect.width() + " " + node.nodeTotalRect.height());
+                    if(!node.isNodeSelected()) {
+                        rectPaint.setColor(node.nodeColor);
+                        canvas.drawRoundRect(node.nodeLeft, node.nodeTop, node.nodeRight, node.nodeBottom, getNodeCornerSize(), getNodeCornerSize(), rectPaint);
+                    }else
+                    if (node.isNodeSelected()){
+                        rectPaint.setColor(node.nodeSelectedColor);
+                        canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
+                                            ,node.nodeSelectedBottom,getNodeCornerSize(),getNodeCornerSize(),rectPaint);
+                    }else{
+
+                    }
                 }
             }
-            setPatternRecreate(false);
+
         }
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -427,10 +466,13 @@ public class PatternLockView extends View {
             case MotionEvent.ACTION_DOWN:
                 for(Node node:getNodeList()){
                     if(node.nodeTotalRect.contains(pathX,pathY)){
-                        setPatternStarted(true);
+                        setPrevNodeX(node.nodeTotalRect.centerX());
+                        setPrevNodeY(node.nodeTotalRect.centerY());
+                        setCurrentMovementX(pathX);
+                        setCurrentMovementY(pathY);
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
-                        node.isNodeSelected = true;
+                        node.setNodeSelected(true);
                         invalidate();
                         //Animate the node
                         return true;
@@ -440,21 +482,24 @@ public class PatternLockView extends View {
 
             case MotionEvent.ACTION_MOVE:
                 for (Node node:getNodeList()){
-                    if(node.nodeTotalRect.contains(pathX,pathY) && !(node.isNodeSelected)){
+                    if(node.nodeTotalRect.contains(pathX,pathY) && !(node.isNodeSelected())){
+                        setPrevNodeX(node.nodeTotalRect.centerX());
+                        setPrevNodeY(node.nodeTotalRect.centerY());
+                        getPatternPath().lineTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
-                        node.isNodeSelected = true;
+                        node.setNodeSelected(true);
                         invalidate();
                         //Animate the node
                     }else{
-                        getPatternPath().lineTo(pathX,pathY);
+                        setCurrentMovementX(pathX);
+                        setCurrentMovementY(pathY);
                         invalidate();
                     }
                 }
                 return true;
 
             case MotionEvent.ACTION_UP:
-                setPatternStarted(false);
                 getOnPatternChangedListener().onPatternCompleted(true);
                 return false;
         }
