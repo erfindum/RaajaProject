@@ -12,11 +12,27 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 EditText edit ;
     EditText edit2;
+    PatternLockView lockView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pattern_sample);
+        lockView = (PatternLockView) findViewById(R.id.patternLock);
+        setLockViewListener();
+    }
 
+    void setLockViewListener(){
+        lockView.setOnPatternChangedListener(new PatternLockView.OnPatternChangedListener() {
+            @Override
+            public void onPatternNodeSelected(int selectedPatternNode) {
+
+            }
+
+            @Override
+            public void onPatternCompleted(boolean patternCompleted) {
+
+            }
+        });
     }
 
     @Override

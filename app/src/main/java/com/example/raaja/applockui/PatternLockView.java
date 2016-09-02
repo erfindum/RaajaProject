@@ -6,11 +6,13 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -23,12 +25,15 @@ import java.util.ArrayList;
  */
 public class PatternLockView extends View {
 
-    private int nodeRectSize,nodeCornerSize,patternViewDimension;
+    private float nodeRectSize,nodeCornerSize;
+    private int patternViewDimension;
     private String[] nodeColor,nodeSelectedColor;
     private int defaultColor,defaultSelectedColor;
-    private boolean patternRecreated, patternError, nodeSelected;
+    private boolean patternRecreated, patternError, patternStarted;
     private Paint nodePaint,nodeSelectedPaint,linePaint;
     private ArrayList<Node> nodeList;
+    private OnPatternChangedListener patternListener;
+    private Path patternPath;
 
     public PatternLockView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,6 +65,7 @@ public class PatternLockView extends View {
             String[] colorSelectedResource = getResources().getStringArray(nodeSelectedColorResourceID);
             setNodeSelectedColor(colorSelectedResource);
         }
+        setPatternPath();
         setNodePaint();
         setNodeSelectedPaint();
         setLinePaint();
@@ -68,12 +74,12 @@ public class PatternLockView extends View {
     /** ---------------- Setters And Getters ------------------*/
 
     public void setNodeRectSize(float nodeRectPixel){
-        this.nodeRectSize = Math.round(nodeRectPixel);
+        this.nodeRectSize = nodeRectPixel;
         Log.d("PatternLockView","Node Total Rect in DP "+ nodeRectPixel);
     }
 
     public void setNodeCornerSize(float nodeCornerPixel){
-        this.nodeCornerSize = Math.round(nodeCornerPixel);
+        this.nodeCornerSize = nodeCornerPixel;
     }
 
                 /* Sets the total dimension of the Pattern View without padding after the measurement
@@ -81,6 +87,10 @@ public class PatternLockView extends View {
                 * */
     public void setPatternViewDimension(int measuredPatternDimension){
         this.patternViewDimension = measuredPatternDimension;
+    }
+
+    public void setPatternPath(){
+        this.patternPath = new Path();
     }
 
     public void setNodeColor(String[] colorArray){
@@ -103,16 +113,21 @@ public class PatternLockView extends View {
         this.patternRecreated = recreatePattern;
     }
 
+                    //Sets a boolean flag to listen for after the pattern is completed. If false touch events are handled.
     public void setPatternError(boolean errorPattern){
         this.patternError = errorPattern;
     }
 
-    public void setNodeSelected(boolean selectedNode){
-        this.nodeSelected = selectedNode;
+    public void setPatternStarted(boolean selectedNode){
+        this.patternStarted = selectedNode;
     }
 
     public void setNodeList(ArrayList<Node> nodeList){
         this.nodeList = nodeList;
+    }
+
+    public void setOnPatternChangedListener(OnPatternChangedListener patternListener){
+        this.patternListener = patternListener;
     }
 
     public void setNodePaint(){
@@ -133,16 +148,20 @@ public class PatternLockView extends View {
         linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
     }
 
-    public int getNodeRectSize(){
+    public float getNodeRectSize(){
         return this.nodeRectSize;
     }
 
-    public  int getNodeCornerSize(){
+    public  float getNodeCornerSize(){
         return this.nodeCornerSize;
     }
 
     public int getPatternViewDimension(){
         return this.patternViewDimension;
+    }
+
+    public Path getPatternPath(){
+        return this.patternPath;
     }
 
     public String[] getNodeColor(){
@@ -161,12 +180,16 @@ public class PatternLockView extends View {
         return this.patternError;
     }
 
-    public boolean isNodeSelected(){
-        return this.nodeSelected;
+    public boolean isPatternStarted(){
+        return this.patternStarted;
     }
 
     public ArrayList<Node> getNodeList(){
         return this.nodeList;
+    }
+
+    public OnPatternChangedListener getOnPatternChangedListener(){
+        return this.patternListener;
     }
 
     public Paint getNodePaint(){
@@ -184,11 +207,29 @@ public class PatternLockView extends View {
     /* ------------ End of Setters And Getters ------------- */
 
     /**
+     * Listener interface which should be implemented to listen for changes in pattern
+     */
+    interface OnPatternChangedListener {
+
+        /**
+         * Called when a node is selected from the users's touch movement.
+         * @param selectedPatternNode The integer for the selected node number
+         */
+        void onPatternNodeSelected(int selectedPatternNode);
+
+        /**
+         * Called when the user's touch movement is completed, notifying that the pattern is finished.
+         * @param patternCompleted The boolean value notifying the pattern completion
+         */
+        void onPatternCompleted(boolean patternCompleted);
+    }
+
+    /**
      * Class which contains drawing information of a particular node in the Pattern View
      */
 
     static class Node{
-        Rect nodeTotalRect; /* Rect for the region around the node*/
+        RectF nodeTotalRect; /* Rect for the region around the node*/
         RectF nodeRect,nodeSelectedRect; /* Rect for the node and selected node for pre Lollipop devices*/
         float nodeLeft,nodeRight,nodeTop,nodeBottom; /* Size for the node on post Lollipop devices */
         float nodeSelectedLeft, nodeSelectedRight,nodeSelectedTop,nodeSelectedBottom; /* Size for the selected node on post Lollipop devices */
@@ -209,10 +250,10 @@ public class PatternLockView extends View {
         int measuredTotalPatternHeight = getPatternViewDimension()+getPaddingTop()+getPaddingBottom();
         Rect measuredPatternViewRect = new Rect(getPaddingLeft(),getPaddingTop(),measuredTotalPatternWidth-getPaddingRight()
                                                 ,measuredTotalPatternHeight-getPaddingBottom());
-        int nodeTotalRectSize = getNodeRectSize();
+        float nodeTotalRectSize = getNodeRectSize();
         float nodeSize = nodeTotalRectSize * 0.25f; //For 50% of nodeSize inside nodeTotalRect
         float nodeSelectedSize = nodeTotalRectSize * 0.125f; //For 75% of nodeSize inside nodeTotalRect;
-        int nodeSpace = (measuredPatternViewRect.width()-(nodeTotalRectSize*3))/2;
+        float nodeSpace = (measuredPatternViewRect.width()-(nodeTotalRectSize*3))/2;
         int colorIndex =0;
         String[] nodeColorArray = getNodeColor();
         String[] nodeSelectedColorArray = getNodeSelectedColor();
@@ -220,11 +261,11 @@ public class PatternLockView extends View {
         for(int i=0;i<3;i++){
             for (int j=0; j<3;j++){
             Node node = new Node();
-                int rectLeft = (nodeSpace*j)+(nodeTotalRectSize*j)+measuredPatternViewRect.left;
-                int rectRight = rectLeft+nodeTotalRectSize;
-                int rectTop = (nodeSpace*i)+(nodeTotalRectSize*i)+measuredPatternViewRect.top;
-                int rectBottom = rectTop+nodeTotalRectSize;
-                node.nodeTotalRect = new Rect(rectLeft,rectTop,rectRight,rectBottom);
+                float rectLeft = (nodeSpace*j)+(nodeTotalRectSize*j)+measuredPatternViewRect.left;
+                float rectRight = rectLeft+nodeTotalRectSize;
+                float rectTop = (nodeSpace*i)+(nodeTotalRectSize*i)+measuredPatternViewRect.top;
+                float rectBottom = rectTop+nodeTotalRectSize;
+                node.nodeTotalRect = new RectF(rectLeft,rectTop,rectRight,rectBottom);
 
                 node.nodeLeft = node.nodeTotalRect.left + (nodeSize);
                 node.nodeRight = node.nodeTotalRect.right - (nodeSize);
@@ -255,12 +296,6 @@ public class PatternLockView extends View {
         setNodeList(nodeList);
         resetIsNodeSelected();
         setPatternRecreate(true);
-        Log.d("PatternLockView","Called in onMeasure"+ getMeasuredHeight()+"\n"
-                + "PatternDimension after measurement " + getPatternViewDimension()+"\n"
-                +" Padding left and right : "+getPaddingLeft()+" "+ getPaddingRight()+"\n"
-                + "NodeSpace : "+nodeSpace + " NodeSize : "+nodeSize+ " NodeSelectedSize : "+nodeSelectedSize
-                + " NodeTotalSize : "+ nodeTotalRectSize);
-
     }
 
     /**
@@ -280,6 +315,7 @@ public class PatternLockView extends View {
     void resetPatternView(){
         resetIsNodeSelected();
         setPatternRecreate(true);
+        setPatternError(false);
         invalidate();
     }
 
@@ -319,7 +355,7 @@ public class PatternLockView extends View {
                 break;
             case MeasureSpec.UNSPECIFIED:
                 int unspecifiedSpacePixel= Math.round(DimensionConverter.convertDpToPixel(30f,getContext()));
-                finalSize =  (getNodeRectSize()*3)+(unspecifiedSpacePixel*2);
+                finalSize =  Math.round((getNodeRectSize()*3)+(unspecifiedSpacePixel*2));
                 break;
         }
         return finalSize;
@@ -328,6 +364,32 @@ public class PatternLockView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if(isPatternStarted()){
+
+            Paint selectedRectPaint = getNodeSelectedPaint();
+            Paint patternLinePaint = getLinePaint();
+            if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
+                for(Node node:getNodeList()){
+                    if(node.isNodeSelected){
+                        selectedRectPaint.setColor(node.nodeSelectedColor);
+                        canvas.drawRoundRect(node.nodeSelectedRect,getNodeCornerSize(),getNodeCornerSize(),selectedRectPaint);
+                        patternLinePaint.setColor(node.nodeColor);
+                    }
+                }
+                canvas.drawPath(getPatternPath(),getLinePaint());
+            }else{
+                for(Node node:getNodeList()){
+                    if (node.isNodeSelected){
+                        selectedRectPaint.setColor(node.nodeSelectedColor);
+                        patternLinePaint.setColor(node.nodeColor);
+                        canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
+                                            ,node.nodeSelectedBottom,getNodeCornerSize(),getNodeCornerSize(),selectedRectPaint);
+                    }
+                }
+                canvas.drawPath(getPatternPath(),getLinePaint());
+            }
+        }
 
         if(isPatternRecreated()){
 
@@ -344,6 +406,59 @@ public class PatternLockView extends View {
                     Log.d("PatternLockView","Rect Bounds " + node.nodeTotalRect.width() + " " + node.nodeTotalRect.height());
                 }
             }
+            setPatternRecreate(false);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+        if(!isPatternError()){
+            return handlePatternGesture(event);
+        }
+        return false;
+    }
+
+    boolean handlePatternGesture(MotionEvent event){
+            float pathX = event.getX();
+            float pathY = event.getY();
+
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                for(Node node:getNodeList()){
+                    if(node.nodeTotalRect.contains(pathX,pathY)){
+                        setPatternStarted(true);
+                        getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
+                        getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
+                        node.isNodeSelected = true;
+                        invalidate();
+                        //Animate the node
+                        return true;
+                    }
+                }
+                return false;
+
+            case MotionEvent.ACTION_MOVE:
+                for (Node node:getNodeList()){
+                    if(node.nodeTotalRect.contains(pathX,pathY) && !(node.isNodeSelected)){
+                        getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
+                        getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
+                        node.isNodeSelected = true;
+                        invalidate();
+                        //Animate the node
+                    }else{
+                        getPatternPath().lineTo(pathX,pathY);
+                        invalidate();
+                    }
+                }
+                return true;
+
+            case MotionEvent.ACTION_UP:
+                setPatternStarted(false);
+                getOnPatternChangedListener().onPatternCompleted(true);
+                return false;
+        }
+
+        return false;
     }
 }
