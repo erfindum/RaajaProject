@@ -205,11 +205,14 @@ public class PatternLockView extends View {
 
     void initNode(){
         ArrayList<Node> nodeList = new ArrayList<>(9);
-        int measuredViewSize = getPatternViewDimension();
+        int measuredTotalPatternWidth = getPatternViewDimension()+getPaddingLeft()+getPaddingRight();
+        int measuredTotalPatternHeight = getPatternViewDimension()+getPaddingTop()+getPaddingBottom();
+        Rect measuredPatternViewRect = new Rect(getPaddingLeft(),getPaddingTop(),measuredTotalPatternWidth-getPaddingRight()
+                                                ,measuredTotalPatternHeight-getPaddingBottom());
         int nodeTotalRectSize = getNodeRectSize();
         float nodeSize = nodeTotalRectSize * 0.25f; //For 50% of nodeSize inside nodeTotalRect
         float nodeSelectedSize = nodeTotalRectSize * 0.125f; //For 75% of nodeSize inside nodeTotalRect;
-        int nodeSpace = (measuredViewSize-(nodeTotalRectSize*3))/2;
+        int nodeSpace = (measuredPatternViewRect.width()-(nodeTotalRectSize*3))/2;
         int colorIndex =0;
         String[] nodeColorArray = getNodeColor();
         String[] nodeSelectedColorArray = getNodeSelectedColor();
@@ -217,9 +220,9 @@ public class PatternLockView extends View {
         for(int i=0;i<3;i++){
             for (int j=0; j<3;j++){
             Node node = new Node();
-                int rectLeft = (nodeSpace*j)+(nodeTotalRectSize*j);
+                int rectLeft = (nodeSpace*j)+(nodeTotalRectSize*j)+measuredPatternViewRect.left;
                 int rectRight = rectLeft+nodeTotalRectSize;
-                int rectTop = (nodeSpace*i)+(nodeTotalRectSize*i);
+                int rectTop = (nodeSpace*i)+(nodeTotalRectSize*i)+measuredPatternViewRect.top;
                 int rectBottom = rectTop+nodeTotalRectSize;
                 node.nodeTotalRect = new Rect(rectLeft,rectTop,rectRight,rectBottom);
 
