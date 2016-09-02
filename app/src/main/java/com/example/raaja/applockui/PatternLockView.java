@@ -63,7 +63,6 @@ public class PatternLockView extends View {
         setNodePaint();
         setNodeSelectedPaint();
         setLinePaint();
-
     }
 
     /** ---------------- Setters And Getters ------------------*/
