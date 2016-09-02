@@ -29,12 +29,11 @@ public class PatternLockView extends View {
     private int patternViewDimension;
     private String[] nodeColor,nodeSelectedColor;
     private int nodeDefaultColor, nodeDefaultSelectedColor,patternLineColor;
-    private boolean patternRecreated, patternError, patternStarted;
-    private Paint nodePaint,nodeSelectedPaint,linePaint;
+    private boolean patternError;
+    private Paint nodePaint,linePaint;
     private ArrayList<Node> nodeList;
     private OnPatternChangedListener patternListener;
     private float prevNodeX, prevNodeY, currentMovementX, currentMovementY;
-    private float lastSelectedNodeX,lastSelectedNodeY;
     private Path patternPath;
 
 
@@ -70,7 +69,6 @@ public class PatternLockView extends View {
         if(nodeColorResourceID !=0){
            String[] colorResource =  getResources().getStringArray(nodeColorResourceID);
             setNodeColor(colorResource);
-            Log.d("PatternLockView","Color = "+ colorResource[4]);
         }
         if (nodeSelectedColorResourceID !=0){
             String[] colorSelectedResource = getResources().getStringArray(nodeSelectedColorResourceID);
@@ -85,7 +83,6 @@ public class PatternLockView extends View {
 
     public void setNodeRectSize(float nodeRectPixel){
         this.nodeRectSize = nodeRectPixel;
-        Log.d("PatternLockView","Node Total Rect in DP "+ nodeRectPixel);
     }
 
     public void setNodeCornerSize(float nodeCornerPixel){
