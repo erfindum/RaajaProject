@@ -44,13 +44,13 @@ public class PatternLockView extends View {
 
     private void initPatternView(Context context,AttributeSet attrs){
         TypedArray attributeArray = context.obtainStyledAttributes(attrs,R.styleable.PatternLockView,0,0);
-        float nodeRectSizeDp = attributeArray.getDimension(R.styleable.PatternLockView_nodeCellSize,30);
-        float nodeCornerSizeDp = attributeArray.getDimension(R.styleable.PatternLockView_nodeCornerSize,5);
+        float nodeRectSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCellSize,30);
+        float nodeCornerSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCornerSize,5);
         int nodeColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeColor,0);
         int nodeSelectedColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeSelectedColor,0);
         attributeArray.recycle();
-        setNodeCornerSize(nodeCornerSizeDp);
-        setNodeRectSize(nodeRectSizeDp);
+        setNodeCornerSize(nodeCornerSizePixel);
+        setNodeRectSize(nodeRectSizePixel);
         if(nodeColorResourceID !=0){
            String[] colorResource =  getResources().getStringArray(nodeColorResourceID);
             setNodeColor(colorResource);
@@ -67,13 +67,13 @@ public class PatternLockView extends View {
 
     /** ---------------- Setters And Getters ------------------*/
 
-    public void setNodeRectSize(float nodeRectDp){
-        this.nodeRectSize = Math.round(nodeRectDp);
-        Log.d("PatternLockView","Node Total Rect in DP "+ nodeRectDp);
+    public void setNodeRectSize(float nodeRectPixel){
+        this.nodeRectSize = Math.round(nodeRectPixel);
+        Log.d("PatternLockView","Node Total Rect in DP "+ nodeRectPixel);
     }
 
-    public void setNodeCornerSize(float nodeCornerDp){
-        this.nodeCornerSize = Math.round(nodeCornerDp);
+    public void setNodeCornerSize(float nodeCornerPixel){
+        this.nodeCornerSize = Math.round(nodeCornerPixel);
     }
 
                 /* Sets the total dimension of the Pattern View without padding after the measurement
