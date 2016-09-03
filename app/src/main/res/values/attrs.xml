@@ -3,6 +3,7 @@
     <declare-styleable name="PatternLockView" >
         <attr name="nodeCellSize" format="dimension"/>
         <attr name="nodeCornerSize" format="dimension"/>
+        <attr name="nodeSelectedCornerSize" format="dimension"/>
         <attr name="patternLineStroke" format="dimension"/>
         <attr name="patternLineColor" format="color"/>
         <attr name="nodeDefaultColor" format="color"/>

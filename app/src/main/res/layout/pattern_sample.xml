@@ -19,10 +19,11 @@
         android:paddingLeft="@dimen/fiftyDpDimension"
         android:layout_marginBottom="@dimen/twentyDpDimension"
         android:layout_alignParentBottom="true"
-        patternLock:nodeCellSize="25dp"
+        patternLock:nodeCellSize="48dp"
         patternLock:nodeCornerSize ="3dp"
         patternLock:patternLineStroke="7dp"
         patternLock:patternLineColor="#7B1FA2"
+        patternLock:nodeSelectedCornerSize="4dp"
         patternLock:nodeColor="@array/nodeColors"
         patternLock:nodeSelectedColor="@array/nodeSelectedColors"
         />

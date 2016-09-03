@@ -23,15 +23,20 @@ EditText edit ;
     }
 
     void setLockViewListener(){
+
         lockView.setOnPatternChangedListener(new PatternLockView.OnPatternChangedListener() {
+            String pattern="";
             @Override
             public void onPatternNodeSelected(int selectedPatternNode) {
-
+                pattern+=String.valueOf(selectedPatternNode);
             }
 
             @Override
             public void onPatternCompleted(boolean patternCompleted) {
+                if(Integer.parseInt(pattern) != 1456){
+                    lockView.postPatternError();
 
+                }
             }
         });
     }

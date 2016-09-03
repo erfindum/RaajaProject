@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class PatternLockView extends View {
 
-    private float nodeRectSize,nodeCornerSize, patternLineWidth;
+    private float nodeRectSize,nodeCornerSize, nodeSelectedCornerSize, patternLineWidth;
     private int patternViewDimension;
     private String[] nodeColor,nodeSelectedColor;
     private int nodeDefaultColor, nodeDefaultSelectedColor,patternLineColor;
@@ -53,6 +53,7 @@ public class PatternLockView extends View {
         TypedArray attributeArray = context.obtainStyledAttributes(attrs,R.styleable.PatternLockView,0,0);
         float nodeRectSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCellSize,30);
         float nodeCornerSizePixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeCornerSize,5);
+        float nodeSelectedCornerPixel = attributeArray.getDimension(R.styleable.PatternLockView_nodeSelectedCornerSize,7);
         float patternStrokeWidthPixel = attributeArray.getDimension(R.styleable.PatternLockView_patternLineStroke,10);
         int patternLineColorID = attributeArray.getColor(R.styleable.PatternLockView_patternLineColor,Color.BLUE);
         int nodeDefaultColorID = attributeArray.getColor(R.styleable.PatternLockView_nodeDefaultColor,Color.GREEN);
@@ -60,8 +61,10 @@ public class PatternLockView extends View {
         int nodeColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeColor,0);
         int nodeSelectedColorResourceID = attributeArray.getResourceId(R.styleable.PatternLockView_nodeSelectedColor,0);
         attributeArray.recycle();
+
         setNodeCornerSize(nodeCornerSizePixel);
         setNodeRectSize(nodeRectSizePixel);
+        setNodeSelectedCornerSize(nodeSelectedCornerPixel);
         setPatternLineWidth(patternStrokeWidthPixel);
         setNodeDefaultColor(nodeDefaultColorID);
         setPatternLineColor(patternLineColorID);
@@ -80,7 +83,7 @@ public class PatternLockView extends View {
     }
 
     /** ---------------- Setters And Getters ------------------*/
-
+                // The rect size in which the nodes are drawn.
     public void setNodeRectSize(float nodeRectPixel){
         this.nodeRectSize = nodeRectPixel;
     }
@@ -91,6 +94,10 @@ public class PatternLockView extends View {
 
     public void setPatternLineWidth(float patternLineWidth){
         this.patternLineWidth = patternLineWidth;
+    }
+
+    public void setNodeSelectedCornerSize(float nodeSelectedCorner){
+        this.nodeSelectedCornerSize = nodeSelectedCorner;
     }
 
                 /* Sets the total dimension of the Pattern View without padding after the measurement
@@ -107,16 +114,12 @@ public class PatternLockView extends View {
     public void setNodeColor(String[] colorArray){
         if((colorArray.length ==9)) {
             this.nodeColor = colorArray;
-        }else{
-            nodeDefaultColor = Color.BLUE;
         }
     }
 
     public void setNodeSelectedColor(String[] colorSelectedArray){
         if((colorSelectedArray.length==9)){
             this.nodeSelectedColor = colorSelectedArray;
-        }else{
-            nodeDefaultSelectedColor = Color.CYAN;
         }
     }
 
@@ -172,6 +175,8 @@ public class PatternLockView extends View {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         linePaint.setStrokeWidth(getPatternLineWidth());
+        linePaint.setColor(getPatternLineColor());
+        linePaint.setAlpha(125);
     }
 
     public float getNodeRectSize(){
@@ -180,6 +185,10 @@ public class PatternLockView extends View {
 
     public  float getNodeCornerSize(){
         return this.nodeCornerSize;
+    }
+
+    public float getNodeSelectedCornerSize(){
+        return this.nodeSelectedCornerSize;
     }
 
     public float getPatternLineWidth(){
@@ -281,7 +290,7 @@ public class PatternLockView extends View {
         float nodeSelectedLeft, nodeSelectedRight,nodeSelectedTop,nodeSelectedBottom; /* Size for the selected node on post Lollipop devices */
         int nodeColor;
         int nodeSelectedColor;
-        ValueAnimator nodeAnimator;
+        ValueAnimator animator;
         int nodeInt; /* Identifier of the node drawn from 1-9. Used to identify a particular node for pattern validation */
         boolean nodeSelected;
         void setNodeSelected(boolean isSelected){
@@ -303,9 +312,9 @@ public class PatternLockView extends View {
         int measuredTotalPatternHeight = getPatternViewDimension()+getPaddingTop()+getPaddingBottom();
         Rect measuredPatternViewRect = new Rect(getPaddingLeft(),getPaddingTop(),measuredTotalPatternWidth-getPaddingRight()
                                                 ,measuredTotalPatternHeight-getPaddingBottom());
-        float nodeTotalRectSize = getNodeRectSize();
-        float nodeSize = nodeTotalRectSize * 0.25f; //For 50% of nodeSize inside nodeTotalRect
-        float nodeSelectedSize = nodeTotalRectSize * 0.125f; //For 75% of nodeSize inside nodeTotalRect;
+        float nodeTotalRectSize = getNodeRectSize(); //Total size inside which a node is drawn
+        float nodeSize = nodeTotalRectSize * 0.375f; //For 25% of nodeSize inside nodeTotalRect
+        float nodeSelectedSize = nodeTotalRectSize * 0.3f; //For 40% of nodeSize inside nodeTotalRect;
         float nodeSpace = (measuredPatternViewRect.width()-(nodeTotalRectSize*3))/2;
         int colorIndex =0;
         String[] nodeColorArray = getNodeColor();
@@ -344,11 +353,56 @@ public class PatternLockView extends View {
                 }
                 node.nodeInt = ++colorIndex;
                 nodeList.add(node);
+                setNodeAnimator(node);
             }
         }
         setNodeList(nodeList);
         resetIsNodeSelected();
         setPatternError(false);
+    }
+
+    void setNodeAnimator(Node node){
+        final Node finalNode = node;
+        final float initialAnimationSize = getNodeRectSize()*0.375f;
+        final float finalAnimationSize = getNodeRectSize()*0.3f;
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
+            ValueAnimator bounceUp = ValueAnimator.ofFloat(node.nodeLeft, node.nodeSelectedLeft);
+            bounceUp.setDuration(100);
+            bounceUp.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float animatedValue = (float) animation.getAnimatedValue();
+                    finalNode.nodeSelectedLeft = finalNode.nodeTotalRect.left+animatedValue;
+                    finalNode.nodeSelectedRight = finalNode.nodeTotalRect.right-animatedValue ;
+                    finalNode.nodeSelectedTop = finalNode.nodeTotalRect.top+animatedValue;
+                    finalNode.nodeSelectedBottom = finalNode.nodeTotalRect.bottom-animatedValue ;
+                    finalNode.nodeSelectedRect.set(finalNode.nodeSelectedLeft,finalNode.nodeSelectedTop
+                                                    ,finalNode.nodeSelectedRight,finalNode.nodeSelectedBottom);
+                    invalidate();
+                }
+            });
+            node.animator = bounceUp;
+        }else {
+            ValueAnimator bounceUp = ValueAnimator.ofFloat(initialAnimationSize, finalAnimationSize);
+            bounceUp.setDuration(100);
+            bounceUp.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float animatedValue = (float) animation.getAnimatedValue();
+                    finalNode.nodeSelectedLeft = finalNode.nodeTotalRect.left+animatedValue;
+                    finalNode.nodeSelectedRight = finalNode.nodeTotalRect.right-animatedValue ;
+                    finalNode.nodeSelectedTop = finalNode.nodeTotalRect.top+animatedValue;
+                    finalNode.nodeSelectedBottom = finalNode.nodeTotalRect.bottom-animatedValue ;
+                    Log.d("PatternLockView","Total sizes "+ finalNode.nodeSelectedLeft + " "+finalNode.nodeSelectedRight
+                                    +" AnimatedValue "+animatedValue+"\n Animated:"
+                                +finalNode.nodeLeft + " " + finalNode.nodeRight + " "+finalNode.nodeTotalRect.left +" "
+                                +finalNode.nodeTotalRect.right);
+
+                    invalidate();
+                }
+            });
+            node.animator=bounceUp;
+        }
     }
 
     /**
@@ -365,10 +419,24 @@ public class PatternLockView extends View {
      * Resets the PatternView to its original state
      */
 
-    void resetPatternView(){
+   public void resetPatternView(){
         resetIsNodeSelected();
         setPatternError(false);
         invalidate();
+    }
+
+    /**
+     * Sets the Pattern in Error state
+     */
+    public void postPatternError(){
+        setPatternError(true);
+        getLinePaint().setColor(Color.parseColor("#ef5350"));
+        getLinePaint().setAlpha(125);
+        invalidate();
+    }
+
+    void startNodeSelectedAnimation(Node node){
+        node.animator.start();
     }
 
     @Override
@@ -419,13 +487,25 @@ public class PatternLockView extends View {
 
             Paint rectPaint = getNodePaint();
             Paint linePaint = getLinePaint();
-                linePaint.setColor(getPatternLineColor());
-                linePaint.setAlpha(125);
+
 
             if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
-                for(Node node:getNodeList()){
-                    rectPaint.setColor(node.nodeColor);
-                    canvas.drawRoundRect(node.nodeRect,getNodeCornerSize(),getNodeCornerSize(),rectPaint);
+                canvas.drawLine(getPrevNodeX(),getPrevNodeY(),getCurrentMovementX(),getCurrentMovementY(),linePaint);
+                canvas.drawPath(getPatternPath(),linePaint);
+                for (Node node :getNodeList()){
+                    if(!node.isNodeSelected()) {
+                        rectPaint.setColor(node.nodeColor);
+                        canvas.drawRoundRect(node.nodeRect, getNodeCornerSize(), getNodeCornerSize(), rectPaint);
+                    }else
+                    if (node.isNodeSelected() && !(isPatternError())){
+                        rectPaint.setColor(node.nodeSelectedColor);
+                        canvas.drawRoundRect(node.nodeSelectedRect,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
+                    }else if(node.isNodeSelected()){
+                        rectPaint.setColor(Color.parseColor("#ef5350"));
+                        linePaint.setColor(Color.parseColor("#ef5350"));
+                        linePaint.setAlpha(125);
+                        canvas.drawRoundRect(node.nodeSelectedRect,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
+                    }
                 }
             }else{
                 canvas.drawLine(getPrevNodeX(),getPrevNodeY(),getCurrentMovementX(),getCurrentMovementY(),linePaint);
@@ -435,12 +515,16 @@ public class PatternLockView extends View {
                         rectPaint.setColor(node.nodeColor);
                         canvas.drawRoundRect(node.nodeLeft, node.nodeTop, node.nodeRight, node.nodeBottom, getNodeCornerSize(), getNodeCornerSize(), rectPaint);
                     }else
-                    if (node.isNodeSelected()){
+                    if (node.isNodeSelected() && !(isPatternError())){
                         rectPaint.setColor(node.nodeSelectedColor);
                         canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
-                                            ,node.nodeSelectedBottom,getNodeCornerSize(),getNodeCornerSize(),rectPaint);
-                    }else{
-
+                                            ,node.nodeSelectedBottom,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
+                    }else if(node.isNodeSelected()){
+                        rectPaint.setColor(Color.parseColor("#ef5350"));
+                        linePaint.setColor(Color.parseColor("#ef5350"));
+                        linePaint.setAlpha(125);
+                        canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
+                                ,node.nodeSelectedBottom,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
                     }
                 }
             }
@@ -471,7 +555,7 @@ public class PatternLockView extends View {
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
                         node.setNodeSelected(true);
-                        invalidate();
+                        startNodeSelectedAnimation(node);
                         //Animate the node
                         return true;
                     }
@@ -487,7 +571,7 @@ public class PatternLockView extends View {
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
                         node.setNodeSelected(true);
-                        invalidate();
+                        startNodeSelectedAnimation(node);
                         //Animate the node
                     }else{
                         setCurrentMovementX(pathX);
