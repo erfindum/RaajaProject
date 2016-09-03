@@ -68,14 +68,14 @@ EditText edit ;
 
             @Override
             public void onPatternCompleted(boolean patternCompleted) {
-                if(Integer.parseInt(pattern) != 1456){
-                    lockView.postPatternError();
-                    animateSet.start();
-                    pattern="";
-                }else{
-                    lockView.resetPatternView();
-                    pattern="";
-                }
+               if(patternCompleted && Integer.parseInt(pattern) != 1456){
+                   lockView.postPatternError();
+                   pattern ="";
+                   animateSet.start();
+               }else if(patternCompleted){
+                   pattern="";
+                   lockView.resetPatternView();
+               }
             }
         });
     }
