@@ -418,6 +418,8 @@ public class PatternLockView extends View {
         resetIsNodeSelected();
         setPatternError(false);
         getPatternPath().rewind();
+       getLinePaint().setColor(getPatternLineColor());
+       getLinePaint().setAlpha(125);
         invalidate();
     }
 

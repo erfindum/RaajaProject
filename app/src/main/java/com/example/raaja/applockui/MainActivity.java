@@ -47,12 +47,14 @@ EditText edit ;
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 textView.setTextColor(Color.parseColor("#ef5350"));
+                textView.setText("Invalid Pattern");
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 textView.setTextColor(Color.parseColor("#ffffff"));
+                textView.setText("Enter pattern to unlock");
                 lockView.resetPatternView();
             }
         });
@@ -69,6 +71,9 @@ EditText edit ;
                 if(Integer.parseInt(pattern) != 1456){
                     lockView.postPatternError();
                     animateSet.start();
+                    pattern="";
+                }else{
+                    lockView.resetPatternView();
                     pattern="";
                 }
             }

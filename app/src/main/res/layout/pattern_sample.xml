@@ -37,6 +37,7 @@
         android:id="@+id/patternLock"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/textInfo"
         android:paddingRight="@dimen/fiftyDpDimension"
         android:paddingLeft="@dimen/fiftyDpDimension"
         android:layout_marginBottom="@dimen/twentyDpDimension"
