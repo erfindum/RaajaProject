@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
-  <!--  <com.example.raaja.applockui.PatternSampleView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/tenDpDimension"
-        android:paddingRight="@dimen/tenDpDimension"
-
-        /> -->
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#C847639E"
+    >
+  <ImageView
+      android:id="@+id/adImage"
+      android:layout_width="230dp"
+      android:layout_height="190dp"
+      android:layout_alignParentTop="true"
+      android:layout_marginTop="@dimen/tenDpDimension"
+      android:layout_centerHorizontal="true"
+      android:src="@drawable/img_sample_ad"
+      />
+  <ImageView
+      android:id="@+id/facebookIcon"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_below="@+id/adImage"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="@dimen/tenDpDimension"
+      android:src="@drawable/img_facebook_icon"
+      />
+  <TextView
+      android:id="@+id/textInfo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/facebookIcon"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="@dimen/tenDpDimension"
+      android:textSize="@dimen/fifteenSpDimension"
+      android:textColor="#ffffff"
+      android:text="Enter pattern to unlock"
+      />
 
     <com.example.raaja.applockui.PatternLockView
         xmlns:patternLock="http://schemas.android.com/apk/res/com.example.raaja.applockui"
@@ -22,7 +44,7 @@
         patternLock:nodeCellSize="48dp"
         patternLock:nodeCornerSize ="3dp"
         patternLock:patternLineStroke="7dp"
-        patternLock:patternLineColor="#7B1FA2"
+        patternLock:patternLineColor="#ffffff"
         patternLock:nodeSelectedCornerSize="4dp"
         patternLock:nodeColor="@array/nodeColors"
         patternLock:nodeSelectedColor="@array/nodeSelectedColors"

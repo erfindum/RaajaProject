@@ -1,11 +1,19 @@
 package com.example.raaja.applockui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Created by RAAJA on 18-08-2016.
@@ -14,15 +22,40 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 EditText edit ;
     EditText edit2;
     PatternLockView lockView;
+    TextView textView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pattern_sample);
         lockView = (PatternLockView) findViewById(R.id.patternLock);
+        textView = (TextView) findViewById(R.id.textInfo);
         setLockViewListener();
     }
 
     void setLockViewListener(){
+        ObjectAnimator textAnimator = ObjectAnimator.ofInt(textView,"padding",0,0,0,0,10,0,0,0);
+        textAnimator.setDuration(100).setInterpolator(new LinearInterpolator());
+        textAnimator.setRepeatCount(3);
+        ObjectAnimator textAnimator1 = ObjectAnimator.ofInt(textView,"padding",0,0,0,0,0,0,10,0);
+        textAnimator.setDuration(100).setInterpolator(new LinearInterpolator());
+        textAnimator1.setRepeatCount(3);
+        final AnimatorSet animateSet = new AnimatorSet();
+        animateSet.playSequentially(textAnimator,textAnimator1);
+        animateSet.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                textView.setTextColor(Color.parseColor("#ef5350"));
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                textView.setTextColor(Color.parseColor("#ffffff"));
+                lockView.resetPatternView();
+            }
+        });
 
         lockView.setOnPatternChangedListener(new PatternLockView.OnPatternChangedListener() {
             String pattern="";
@@ -35,7 +68,8 @@ EditText edit ;
             public void onPatternCompleted(boolean patternCompleted) {
                 if(Integer.parseInt(pattern) != 1456){
                     lockView.postPatternError();
-
+                    animateSet.start();
+                    pattern="";
                 }
             }
         });

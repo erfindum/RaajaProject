@@ -393,11 +393,6 @@ public class PatternLockView extends View {
                     finalNode.nodeSelectedRight = finalNode.nodeTotalRect.right-animatedValue ;
                     finalNode.nodeSelectedTop = finalNode.nodeTotalRect.top+animatedValue;
                     finalNode.nodeSelectedBottom = finalNode.nodeTotalRect.bottom-animatedValue ;
-                    Log.d("PatternLockView","Total sizes "+ finalNode.nodeSelectedLeft + " "+finalNode.nodeSelectedRight
-                                    +" AnimatedValue "+animatedValue+"\n Animated:"
-                                +finalNode.nodeLeft + " " + finalNode.nodeRight + " "+finalNode.nodeTotalRect.left +" "
-                                +finalNode.nodeTotalRect.right);
-
                     invalidate();
                 }
             });
@@ -422,6 +417,7 @@ public class PatternLockView extends View {
    public void resetPatternView(){
         resetIsNodeSelected();
         setPatternError(false);
+        getPatternPath().rewind();
         invalidate();
     }
 
