@@ -155,7 +155,6 @@ public class PatternLockView extends View {
                     //Sets a boolean flag to listen for after the pattern is completed. If false touch events are handled.
     public void setPatternError(boolean errorPattern){
         this.patternError = errorPattern;
-        Log.d("PatternLockView:","Pattern is set to error : ---------- "+ errorPattern );
     }
 
     public void setNodeList(ArrayList<Node> nodeList){
@@ -507,18 +506,15 @@ public class PatternLockView extends View {
                     if(!node.isNodeSelected()) {
                         rectPaint.setColor(node.nodeColor);
                         canvas.drawRoundRect(node.nodeRect, getNodeCornerSize(), getNodeCornerSize(), rectPaint);
-                        Log.d("PatternLockView :"," Drawn Node"+ node.nodeInt);
                     }else
                     if (node.isNodeSelected() && !(isPatternError())){
                         rectPaint.setColor(node.nodeSelectedColor);
                         canvas.drawRoundRect(node.nodeSelectedRect,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
-                        Log.d("PatternLockView :"," Drawn Selected Node"+ node.nodeInt);
                     }else if(isPatternError()){
                         rectPaint.setColor(Color.parseColor("#ef5350"));
                         linePaint.setColor(Color.parseColor("#ef5350"));
                         linePaint.setAlpha(125);
                         canvas.drawRoundRect(node.nodeSelectedRect,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
-                        Log.d("PatternLockView :"," Drawn Error Node"+ node.nodeInt);
                     }
                 }
             }else{
@@ -539,7 +535,6 @@ public class PatternLockView extends View {
                         linePaint.setAlpha(125);
                         canvas.drawRoundRect(node.nodeSelectedLeft,node.nodeSelectedTop,node.nodeSelectedRight
                                 ,node.nodeSelectedBottom,getNodeSelectedCornerSize(),getNodeSelectedCornerSize(),rectPaint);
-                        Log.d("PatternLockView :"," Drawn Error Node"+ node.nodeInt);
                     }
                 }
             }
