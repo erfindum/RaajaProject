@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent" android:background="#C847639E"
     >
-  <ImageView
+  <android.support.v7.widget.AppCompatImageView
       android:id="@+id/adImage"
       android:layout_width="230dp"
       android:layout_height="190dp"
       android:layout_alignParentTop="true"
       android:layout_marginTop="@dimen/tenDpDimension"
       android:layout_centerHorizontal="true"
-      android:src="@drawable/img_sample_ad"
+      app:srcCompat="@drawable/img_sample_ad"
       />
-  <ImageView
+  <android.support.v7.widget.AppCompatImageView
       android:id="@+id/facebookIcon"
       android:layout_width="40dp"
       android:layout_height="40dp"
       android:layout_below="@+id/adImage"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/tenDpDimension"
-      android:src="@drawable/img_facebook_icon"
+      app:srcCompat="@drawable/img_facebook_icon"
       />
   <TextView
       android:id="@+id/textInfo"
@@ -38,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/textInfo"
+        android:layout_centerHorizontal="true"
         android:paddingRight="@dimen/fiftyDpDimension"
         android:paddingLeft="@dimen/fiftyDpDimension"
         android:layout_marginBottom="@dimen/twentyDpDimension"

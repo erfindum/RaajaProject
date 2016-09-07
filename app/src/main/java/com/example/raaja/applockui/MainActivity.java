@@ -35,10 +35,10 @@ EditText edit ;
     void setLockViewListener(){
         ObjectAnimator textAnimator = ObjectAnimator.ofInt(textView,"padding",0,0,0,0,10,0,0,0);
         textAnimator.setDuration(100).setInterpolator(new LinearInterpolator());
-        textAnimator.setRepeatCount(3);
+        textAnimator.setRepeatCount(2);
         ObjectAnimator textAnimator1 = ObjectAnimator.ofInt(textView,"padding",0,0,0,0,0,0,10,0);
         textAnimator.setDuration(100).setInterpolator(new LinearInterpolator());
-        textAnimator1.setRepeatCount(3);
+        textAnimator1.setRepeatCount(2);
         final AnimatorSet animateSet = new AnimatorSet();
         animateSet.playSequentially(textAnimator,textAnimator1);
         animateSet.addListener(new AnimatorListenerAdapter() {
@@ -58,6 +58,7 @@ EditText edit ;
                 lockView.resetPatternView();
             }
         });
+
 
         lockView.setOnPatternChangedListener(new PatternLockView.OnPatternChangedListener() {
             String pattern="";

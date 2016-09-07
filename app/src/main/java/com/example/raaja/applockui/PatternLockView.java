@@ -157,7 +157,7 @@ public class PatternLockView extends View {
         this.patternError = errorPattern;
     }
 
-    public void setNodeList(ArrayList<Node> nodeList){
+    private void setNodeList(ArrayList<Node> nodeList){
         this.nodeList = nodeList;
     }
 
@@ -244,7 +244,7 @@ public class PatternLockView extends View {
         return this.patternError;
     }
 
-    public ArrayList<Node> getNodeList(){
+    private ArrayList<Node> getNodeList(){
         return this.nodeList;
     }
 
@@ -284,22 +284,23 @@ public class PatternLockView extends View {
      * Class which contains drawing information of a particular node in the Pattern View
      */
 
-    static class Node{
-        RectF nodeTotalRect; /* Rect for the region around the node*/
-        RectF nodeRect,nodeSelectedRect; /* Rect for the node and selected node for pre Lollipop devices*/
-        float nodeLeft,nodeRight,nodeTop,nodeBottom; /* Size for the node on post Lollipop devices */
-        float nodeSelectedLeft, nodeSelectedRight,nodeSelectedTop,nodeSelectedBottom; /* Size for the selected node on post Lollipop devices */
-        int nodeColor;
-        int nodeSelectedColor;
-        ValueAnimator animator;
-        int nodeInt; /* Identifier of the node drawn from 1-9. Used to identify a particular node for pattern validation */
-        boolean nodeSelected;
-        void setNodeSelected(boolean isSelected){
+   private static class Node{
+        private RectF nodeTotalRect; /* Rect for the region around the node*/
+        private RectF nodeRect,nodeSelectedRect; /* Rect for the node and selected node for pre Lollipop devices*/
+        private float nodeLeft,nodeRight,nodeTop,nodeBottom; /* Size for the node on post Lollipop devices */
+        private float nodeSelectedLeft, nodeSelectedRight,nodeSelectedTop,nodeSelectedBottom; /* Size for the selected node on post Lollipop devices */
+        private int nodeColor;
+        private int nodeSelectedColor;
+        private ValueAnimator animator;
+        private int nodeInt; /* Identifier of the node drawn from 1-9. Used to identify a particular node for pattern validation */
+        private boolean nodeSelected;
+        private void setNodeSelected(boolean isSelected){
             this.nodeSelected = isSelected;
         }
-        boolean isNodeSelected(){
+        private boolean isNodeSelected(){
             return this.nodeSelected;
         }
+        private Node(){}
 
     }
 
@@ -307,7 +308,7 @@ public class PatternLockView extends View {
      * Initializes the nodes for Pattern View
      */
 
-    void initNodes(){
+    private void initNodes(){
         ArrayList<Node> nodeList = new ArrayList<>(9);
         int colorIndex =0;
         String[] nodeColorArray = getNodeColor();
@@ -336,7 +337,7 @@ public class PatternLockView extends View {
      * Measures each node to be drawn for Pattern View
      */
 
-    void measureAndSetNodes(){
+   private void measureAndSetNodes(){
         int measuredTotalPatternWidth = getPatternViewDimension()+getPaddingLeft()+getPaddingRight();
         int measuredTotalPatternHeight = getPatternViewDimension()+getPaddingTop()+getPaddingBottom();
         Rect measuredPatternViewRect = new Rect(getPaddingLeft(),getPaddingTop(),measuredTotalPatternWidth-getPaddingRight()
@@ -374,7 +375,7 @@ public class PatternLockView extends View {
         }
     }
 
-    void setNodeAnimator(Node node){
+    private void setNodeAnimator(Node node){
         final Node finalNode = node;
         final float initialAnimationSize = getNodeRectSize()*0.375f;
         final float finalAnimationSize = getNodeRectSize()*0.3f;
@@ -417,7 +418,7 @@ public class PatternLockView extends View {
      * Resets the selected nodes to the unselected state
      */
 
-    void resetIsNodeSelected(){
+    private void resetIsNodeSelected(){
         for(Node node:getNodeList()){
             node.setNodeSelected(false);
         }
@@ -446,7 +447,7 @@ public class PatternLockView extends View {
         invalidate();
     }
 
-    void startNodeSelectedAnimation(Node node){
+    private void startNodeSelectedAnimation(Node node){
         node.animator.start();
     }
 
@@ -475,7 +476,7 @@ public class PatternLockView extends View {
      * @return The final size without padding in int
      */
 
-    int getFinalPatternViewSize(int measureMode, int measureSize){
+    private int getFinalPatternViewSize(int measureMode, int measureSize){
         int finalSize =0;
         switch(measureMode){
             case MeasureSpec.EXACTLY:
