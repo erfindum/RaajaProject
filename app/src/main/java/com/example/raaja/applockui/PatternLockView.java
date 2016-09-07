@@ -29,12 +29,13 @@ public class PatternLockView extends View {
     private int patternViewDimension;
     private String[] nodeColor,nodeSelectedColor;
     private int nodeDefaultColor, nodeDefaultSelectedColor,patternLineColor;
-    private boolean patternError;
+    private boolean patternError, drawPattern;
     private Paint nodePaint,linePaint;
     private ArrayList<Node> nodeList;
     private OnPatternChangedListener patternListener;
     private float prevNodeX, prevNodeY, currentMovementX, currentMovementY;
     private Path patternPath;
+
 
 
     public PatternLockView(Context context, AttributeSet attrs) {
@@ -156,6 +157,9 @@ public class PatternLockView extends View {
     public void setPatternError(boolean errorPattern){
         this.patternError = errorPattern;
     }
+    /** Sets the flag for drawing pattern line. As the touch is detected from every point inside
+     * the pattern view, setting this flag will draw the pattern line only when the patter is started*/
+    private void setDrawPattern(boolean drawPattern){this.drawPattern = drawPattern;}
 
     private void setNodeList(ArrayList<Node> nodeList){
         this.nodeList = nodeList;
@@ -243,6 +247,8 @@ public class PatternLockView extends View {
     public boolean isPatternError(){
         return this.patternError;
     }
+
+    private boolean isDrawPattern(){return this.drawPattern;}
 
     private ArrayList<Node> getNodeList(){
         return this.nodeList;
@@ -431,6 +437,7 @@ public class PatternLockView extends View {
    public void resetPatternView(){
         resetIsNodeSelected();
         setPatternError(false);
+        setDrawPattern(false);
         getPatternPath().rewind();
        getLinePaint().setColor(getPatternLineColor());
        getLinePaint().setAlpha(125);
@@ -501,8 +508,10 @@ public class PatternLockView extends View {
             Paint linePaint = getLinePaint();
 
             if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
-                canvas.drawLine(getPrevNodeX(),getPrevNodeY(),getCurrentMovementX(),getCurrentMovementY(),linePaint);
-                canvas.drawPath(getPatternPath(),linePaint);
+                if(isDrawPattern()) {
+                    canvas.drawLine(getPrevNodeX(), getPrevNodeY(), getCurrentMovementX(), getCurrentMovementY(), linePaint);
+                    canvas.drawPath(getPatternPath(), linePaint);
+                }
                 for (Node node :getNodeList()){
                     if(!node.isNodeSelected()) {
                         rectPaint.setColor(node.nodeColor);
@@ -519,8 +528,10 @@ public class PatternLockView extends View {
                     }
                 }
             }else{
+                if(isDrawPattern()){
                 canvas.drawLine(getPrevNodeX(),getPrevNodeY(),getCurrentMovementX(),getCurrentMovementY(),linePaint);
                 canvas.drawPath(getPatternPath(),linePaint);
+                }
                 for (Node node :getNodeList()){
                     if(!node.isNodeSelected()) {
                         rectPaint.setColor(node.nodeColor);
@@ -552,9 +563,8 @@ public class PatternLockView extends View {
     }
 
     boolean handlePatternGesture(MotionEvent event){
-            float pathX = event.getX();
-            float pathY = event.getY();
-
+        float pathX = event.getX();
+        float pathY = event.getY();
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 for(Node node:getNodeList()){
@@ -566,25 +576,30 @@ public class PatternLockView extends View {
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
                         node.setNodeSelected(true);
+                        setDrawPattern(true);
                         startNodeSelectedAnimation(node);
                         //Animate the node
                         return true;
                     }
                 }
-                return false;
+                return true;
 
             case MotionEvent.ACTION_MOVE:
                 for (Node node:getNodeList()){
                     if(node.nodeTotalRect.contains(pathX,pathY) && !(node.isNodeSelected())){
                         setPrevNodeX(node.nodeTotalRect.centerX());
                         setPrevNodeY(node.nodeTotalRect.centerY());
+                        if(!isDrawPattern()){
+                            getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
+                        }
                         getPatternPath().lineTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getPatternPath().moveTo(node.nodeTotalRect.centerX(),node.nodeTotalRect.centerY());
                         getOnPatternChangedListener().onPatternNodeSelected(node.nodeInt);
                         node.setNodeSelected(true);
+                        setDrawPattern(true);
                         startNodeSelectedAnimation(node);
                         //Animate the node
-                    }else{
+                    }else if(isDrawPattern()){
                         setCurrentMovementX(pathX);
                         setCurrentMovementY(pathY);
                         invalidate();
@@ -600,6 +615,6 @@ public class PatternLockView extends View {
                 return false;
         }
 
-        return false;
+        return true;
     }
 }

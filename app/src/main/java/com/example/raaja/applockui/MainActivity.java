@@ -69,13 +69,15 @@ EditText edit ;
 
             @Override
             public void onPatternCompleted(boolean patternCompleted) {
-               if(patternCompleted && Integer.parseInt(pattern) != 1456){
-                   lockView.postPatternError();
-                   pattern ="";
-                   animateSet.start();
-               }else if(patternCompleted){
-                   pattern="";
-                   lockView.resetPatternView();
+               if(patternCompleted) {
+                   if (!(pattern.equals("")) && Integer.parseInt(pattern) != 1456) {
+                       lockView.postPatternError();
+                       pattern = "";
+                       animateSet.start();
+                   } else {
+                       pattern = "";
+                       lockView.resetPatternView();
+                   }
                }
             }
         });
