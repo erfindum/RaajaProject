@@ -221,6 +221,9 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
                     pinClicked("0");
                 break;
             case R.id.set_pin_fragment_digit_clear:
+                    if(selectedPin!=null){
+                        clearPin();
+                    }
 
                 break;
         }
@@ -350,7 +353,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
 
     ImageView getTrigger(int trigger){
         if(trigger>4 || trigger<1){
-            throw new IllegalArgumentException("Trigger no cannot be less 0 or more than 4");
+            throw new IllegalArgumentException("Trigger no cannot be less than 0 or more than 4");
         }
         switch (trigger){
             case 1:
@@ -366,7 +369,13 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
     }
 
     void clearPin(){
-
+        if(!selectedPin.isEmpty() && selectedPin.length()>=0){
+            getTrigger(selectedPin.length()).setBackgroundResource(R.drawable.img_pin_normal);
+            getDigitButton(String.valueOf(selectedPin.charAt(selectedPin.length()-1))).setBackgroundResource(R.drawable.img_pin_normal);
+            selectedPin = selectedPin.substring(0,selectedPin.length()-1);
+            pinDigitCount-=1;
+            Log.d("PatternLock","Cleared : " +selectedPin);
+        }
     }
 
     @Override
