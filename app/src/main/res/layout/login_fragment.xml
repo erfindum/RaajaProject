@@ -95,7 +95,7 @@
                 android:textAllCaps="true"
                 android:textSize="@dimen/fifteenSpDimension"
                 android:background="@color/colorMainAccent"
-                android:textColor="@color/white"
+                android:textColor="@color/textPrimaryColor"
                 />
 
             <TextView

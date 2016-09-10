@@ -100,7 +100,7 @@
             android:text="@string/signUp_fragment_signup"
             android:textAllCaps="true"
             android:textSize="@dimen/fifteenSpDimension"
-            android:background="@drawable/main_button_selector"
+            android:background="@drawable/selector_main_button"
             android:textColor="@color/white"
             android:layout_marginTop="@dimen/tenDpDimension"
             />

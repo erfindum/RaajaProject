@@ -47,10 +47,6 @@
 
     <PreferenceCategory android:title="@string/preference_fragment_user_settings_title"/>
     <Preference
-        android:id="@+id/preference_fragment_change_user_image"
-        android:title="@string/preference_fragment_change_user_image_title"
-        />
-    <Preference
         android:id="@+id/preference_fragment_change_security_question"
         android:title="@string/preference_fragment_change_security_question_title"
         />
@@ -58,6 +54,4 @@
         android:id="@+id/preference_fragment_logout"
         android:title="@string/preference_fragment_logout_user_account_title"
         />
-
-
 </PreferenceScreen>

@@ -22,6 +22,7 @@
     <dimen name="sevenDpDimension">7dp</dimen>
     <dimen name="seventyDpDimension">60dp</dimen>
     <dimen name="tenDpDimension">10dp</dimen>
+    <dimen name="threeDpDimension">3dp</dimen>
     <dimen name="thirtyDpDimension">30dp</dimen>
     <dimen name="thirtyTwoDpDimension">32dp</dimen>
     <dimen name="thirtyFiveDpDimension">35dp</dimen>

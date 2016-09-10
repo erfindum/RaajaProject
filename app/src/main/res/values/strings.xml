@@ -91,4 +91,21 @@
     <string name="main_screen_activity_user_profile_button_text">My Profile</string>
     <string name="main_screen_activity_faq_button_text">FAQ</string>
 
+    <!-- Set Pattern Screen -->
+    <string name="set_pattern_fragment_title_text">Set Pattern</string>
+    <string name="set_pattern_fragment_info_text">Connect minimum of 4 dots</string>
+    <string name="set_pattern_fragment_change_lock_text">Change to PIN lock</string>
+    <string name="set_pattern_fragment_confirm_text">Confirm Pattern</string>
+    <string name="set_pattern_fragment_not_equal_text">Pattern did not match</string>
+    <string name="set_pattern_fragment_reset_text">RESET</string>
+
+
+    <!-- Set Pin Screen -->
+    <string name="set_pin_fragment_title_text">Set PIN</string>
+    <string name="set_pin_fragment_info_text">Select 4 digits as PIN</string>
+    <string name="set_pin_fragment_change_lock_text">Change to Pattern lock</string>
+    <string name="set_pin_fragment_confirm_text">Confirm PIN</string>
+    <string name="set_pin_fragment_not_equal_text">PIN did not match</string>
+
+
 </resources>

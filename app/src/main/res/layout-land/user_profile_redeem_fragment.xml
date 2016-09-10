@@ -171,7 +171,7 @@
                 android:text="@string/user_profile_fragment_redeem_cash_text"
                 android:textAllCaps="true"
                 android:textSize="@dimen/fifteenSpDimension"
-                android:background="@drawable/main_button_selector"
+                android:background="@drawable/selector_main_button"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/tenDpDimension"
                 />

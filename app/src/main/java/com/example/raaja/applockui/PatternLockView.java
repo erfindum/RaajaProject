@@ -321,18 +321,23 @@ public class PatternLockView extends View {
         String[] nodeSelectedColorArray = getNodeSelectedColor();
 
         for(int i=0;i<3;i++){
-            for (int j=0; j<3;j++){
-            Node node = new Node();
-                if(nodeColorArray.length==9 && nodeSelectedColorArray.length==9){
-                    node.nodeColor = Color.parseColor(nodeColorArray[colorIndex]);
-                    node.nodeSelectedColor = Color.parseColor(nodeSelectedColorArray[colorIndex]);
+            for (int j=0; j<3;j++) {
+                Node node = new Node();
+                if (nodeColorArray != null && nodeSelectedColorArray != null) {
+                    if (nodeColorArray.length == 9 && nodeSelectedColorArray.length == 9) {
+                        node.nodeColor = Color.parseColor(nodeColorArray[colorIndex]);
+                        node.nodeSelectedColor = Color.parseColor(nodeSelectedColorArray[colorIndex]);
+                    }
+                    node.nodeInt = ++colorIndex;
+                    nodeList.add(node);
+                    setNodeAnimator(node);
                 }else{
                     node.nodeColor = getNodeDefaultColor();
                     node.nodeSelectedColor = getNodeDefaultSelectedColor();
+                    node.nodeInt = ++colorIndex;
+                    nodeList.add(node);
+                    setNodeAnimator(node);
                 }
-                node.nodeInt = ++colorIndex;
-                nodeList.add(node);
-                setNodeAnimator(node);
             }
         }
         setNodeList(nodeList);
@@ -556,7 +561,7 @@ public class PatternLockView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        if(!isPatternError()){
+        if(!isPatternError() && getOnPatternChangedListener()!=null){
             return handlePatternGesture(event);
         }
         return false;

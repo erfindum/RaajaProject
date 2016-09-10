@@ -300,7 +300,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/user_profile_fragment_redeem_info_title"
             android:layout_marginTop="@dimen/twentyDpDimension"
-            android:background="@drawable/main_button_selector"
+            android:background="@drawable/selector_main_button"
             android:text="@string/user_profile_fragment_redeem_cash_text"
             android:padding="@dimen/tenDpDimension"
             android:textSize="@dimen/fifteenSpDimension"
