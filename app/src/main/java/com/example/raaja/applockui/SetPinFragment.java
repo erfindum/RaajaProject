@@ -37,7 +37,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
 
     private String selectedPin,pinSetFirstAttempt, pinConfirmed;
     private int pinDigitCount, pinSetCount=PIN_SET_FIRST_ATTEMPT;
-    private boolean isPinSetStarted,isPinSetCompleted; // Set to true when user starts pressing the Pin
+    private boolean isPinSetStarted,isPinSetCompleted,isResetPin; // Set to true when user starts pressing the Pin
     ObjectAnimator pinErrorAnimator,pinCompleteAnimator;
 
     SetPinPatternActivity pinPatternActivity;
@@ -96,7 +96,13 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
         changeLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pinPatternActivity.addNewFragment(SetPinPatternActivity.SET_PATTERN_FRAGMENT_TAG);
+                if(isResetPin){
+                    pinHead.setText(R.string.set_pin_fragment_title_text);
+                    changeLock.setText(R.string.set_pin_fragment_change_lock_text);
+                    resetPinView(RESET_PIN_VIEW_COMPLETE);
+                }else{
+                    pinPatternActivity.addNewFragment(SetPinPatternActivity.SET_PATTERN_FRAGMENT_TAG);
+                }
             }
         });
 
@@ -182,6 +188,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
                     resetPinView(RESET_PIN_VIEW_COMPLETE);
                 }else{
                     resetPinView(RESET_PIN_VIEW_PARTIAL);
+                    isResetPin =true;
                 }
             }
         });
@@ -307,6 +314,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
         if (reset==RESET_PIN_VIEW_COMPLETE){
             isPinSetStarted=false;
             isPinSetCompleted=false;
+            isResetPin=false;
             pinDigitCount=0;
             selectedPin="";
             pinSetFirstAttempt="";
