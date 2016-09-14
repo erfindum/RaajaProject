@@ -112,6 +112,9 @@
     <string name="appLock_activity_additional_settings_header">RECOMMENDED</string>
     <string name="appLock_activity_checked_apps_header">LOCKED</string>
     <string name="appLock_activity_installed_apps_header">INSTALLED</string>
+    <string name="appLock_activity_installed_apps_empty">NO NEW APPS INSTALLED</string>
+    <string name="appLock_activity_checked_apps_empty">No New Apps Locked</string>
+
 
 
     <string-array name="recommended_app_list">
