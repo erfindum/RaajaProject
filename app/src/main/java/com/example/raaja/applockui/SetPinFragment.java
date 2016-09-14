@@ -179,6 +179,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
+
             }
 
             @Override
@@ -244,21 +245,19 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
 
     void pinClicked(String digit){
         Button button = getDigitButton(digit);
+
         if(!isPinSetStarted){
             isPinSetStarted = true;
             pinDigitCount+=1;
             selectedPin+=digit;
-            button.setBackgroundResource(R.drawable.img_pin_selected);
             getTrigger(pinDigitCount).setBackgroundResource(R.drawable.img_pin_selected);
-        }else if(pinDigitCount<3 && !selectedPin.contains(digit)){
+        }else if(pinDigitCount<3 ){
             pinDigitCount+=1;
             selectedPin+=digit;
-            button.setBackgroundResource(R.drawable.img_pin_selected);
             getTrigger(pinDigitCount).setBackgroundResource(R.drawable.img_pin_selected);
-        }else if(pinDigitCount == 3 && !selectedPin.contains(digit)){
+        }else if(pinDigitCount == 3){
             selectedPin+=digit;
             pinDigitCount+=1;
-            button.setBackgroundResource(R.drawable.img_pin_selected);
             getTrigger(pinDigitCount).setBackgroundResource(R.drawable.img_pin_selected);
             if(pinSetCount==PIN_SET_FIRST_ATTEMPT) {
                 pinSetCount=PIN_SET_CONFIRMED;
@@ -300,7 +299,7 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
             for (int i = 0; i < selectedPin.length(); i++) {
                 digitString = String.valueOf(selectedPin.charAt(i));
                 button = getDigitButton(digitString);
-                button.setBackgroundResource(R.drawable.img_pin_normal);
+                button.setBackgroundResource(R.drawable.selector_pin_fragment_digit_button);
             }
         }
         for(int i =1;i<=4;i++){
@@ -379,7 +378,6 @@ public class SetPinFragment extends Fragment implements View.OnClickListener {
     void clearPin(){
         if(!selectedPin.isEmpty() && selectedPin.length()>=0){
             getTrigger(selectedPin.length()).setBackgroundResource(R.drawable.img_pin_normal);
-            getDigitButton(String.valueOf(selectedPin.charAt(selectedPin.length()-1))).setBackgroundResource(R.drawable.img_pin_normal);
             selectedPin = selectedPin.substring(0,selectedPin.length()-1);
             pinDigitCount-=1;
             Log.d("PatternLock","Cleared : " +selectedPin);

@@ -20,7 +20,7 @@ public class AppLoaderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_loader_activity);
-        prefs = getSharedPreferences("lockUp_general_preferences",MODE_PRIVATE);
+        prefs = getSharedPreferences(AppLockModel.APP_LOCK_PREFERENCE_NAME,MODE_PRIVATE);
         isFirstLoad = prefs.getBoolean("lockUp_is_first_load",true);
     }
 

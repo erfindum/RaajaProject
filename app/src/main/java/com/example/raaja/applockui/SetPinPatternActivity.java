@@ -56,9 +56,6 @@ public class SetPinPatternActivity extends AppCompatActivity {
         }
 
 }
-    void finishActivity(){
-        this.finish();
-    }
 
     @Override
     public void onBackPressed() {

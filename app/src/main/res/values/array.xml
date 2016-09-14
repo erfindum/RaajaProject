@@ -23,6 +23,22 @@
         <item>#d32f2f</item>
         <item>#FBC02D</item>
         <item>#F57C00</item>
-
     </string-array>
+
+    <string-array name="includedSystemApps">
+        <item>"com.android.documentsui"</item>
+        <item>"com.android.gallery"</item>
+        <item>"com.android.messaging"</item>
+        <item>"com.android.browser"</item>
+        <item>"com.android.contacts"</item>
+        <item>"com.android.calendar"</item>
+        <item>"com.google.android.apps.maps"</item>
+        <item>"com.android.camera"</item>
+        <item>"com.android.dialer"</item>
+        <item>"com.android.calculator2"</item>
+        <item>"com.android.email"</item>
+        <item>"com.android.music"</item>
+        <item>"com.android.deskclock"</item>
+    </string-array>
+
 </resources>

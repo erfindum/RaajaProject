@@ -8,9 +8,12 @@
     <dimen name="thirtyFourSpDimension">34sp</dimen>
     <dimen name="fifteenSpDimension">15sp</dimen>
     <dimen name="twentyFourSpDimension">24sp</dimen>
+    <dimen name="twelveSpDimension">12sp</dimen>
+    <dimen name="seventeenSpDimension">17sp</dimen>
 
     <dimen name="loginLineSeperator">225dp</dimen>
 
+    <dimen name="fiveDpDimension">5dp</dimen>
     <dimen name="fifteenDpDimension">15dp</dimen>
     <dimen name="fiftyDpDimension">50dp</dimen>
     <dimen name="fourDpDimension">4dp</dimen>
@@ -21,6 +24,9 @@
     <dimen name="oneHunderedAndFiftyDpDimension">150dp</dimen>
     <dimen name="sevenDpDimension">7dp</dimen>
     <dimen name="seventyDpDimension">60dp</dimen>
+    <dimen name="sixtyFiveDpDimension">65dp</dimen>
+    <dimen name="seventyFiveDpDimension">75dp</dimen>
+
     <dimen name="tenDpDimension">10dp</dimen>
     <dimen name="threeDpDimension">3dp</dimen>
     <dimen name="thirtyDpDimension">30dp</dimen>

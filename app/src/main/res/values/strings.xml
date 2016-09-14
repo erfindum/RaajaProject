@@ -107,5 +107,18 @@
     <string name="set_pin_fragment_confirm_text">Confirm PIN</string>
     <string name="set_pin_fragment_not_equal_text">PIN did not match</string>
 
+    <!-- App Lock Activity -->
+    <string name="appLock_activity_title">AppLock</string>
+    <string name="appLock_activity_additional_settings_header">RECOMMENDED</string>
+    <string name="appLock_activity_checked_apps_header">LOCKED</string>
+    <string name="appLock_activity_installed_apps_header">INSTALLED</string>
+
+
+    <string-array name="recommended_app_list">
+        <item>Lock Notifications</item>
+        <item>Lock App Installer</item>
+        <item>Prevent LockUp Uninstall</item>
+    </string-array>
+
 
 </resources>

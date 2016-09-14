@@ -15,6 +15,7 @@
     <color name="transparentWhite">#7Dffffff</color>
     <color name="darkBlue">#1565C0</color>
     <color name="errorRed">#ef5350</color>
+    <color name="backgroundGrey">#EDEDED</color>
 
 
 </resources>
