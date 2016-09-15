@@ -113,8 +113,12 @@
     <string name="appLock_activity_checked_apps_header">LOCKED</string>
     <string name="appLock_activity_installed_apps_header">INSTALLED</string>
     <string name="appLock_activity_installed_apps_empty">NO NEW APPS INSTALLED</string>
-    <string name="appLock_activity_checked_apps_empty">No New Apps Locked</string>
-
+    <string name="appLock_activity_checked_apps_empty">NO NEW APPS LOCKED</string>
+    <string name="appLock_activity_usage_dialog_message">
+        In Android Lollipop(5.0) and above you must permit usage access for LockUp to use the app lock function
+    </string>
+    <string name="appLock_activity_usage_dialog_permit_text">PERMIT</string>
+    <string name="appLock_activity_usage_dialog_cancel_text">CANCEL</string>
 
 
     <string-array name="recommended_app_list">

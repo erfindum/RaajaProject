@@ -90,4 +90,8 @@ public class AppLockRecyclerViewItem extends RecyclerView.ViewHolder  {
     }
 
     AnimatorSet getLockButoonAnimator(){return this.lockAnimator;}
+
+    View getItemView(){
+        return  this.itemView;
+    }
 }
